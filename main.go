@@ -51,7 +51,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	} else {
-		fmt.Println("Connected to database successfully")
+		fmt.Println("Connected to database successfully ")
 	}
 
 	// Close the databse connection when the main function closes
