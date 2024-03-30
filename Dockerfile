@@ -1,17 +1,31 @@
-# Build stage
-FROM golang:1.16-alpine3.13
 
+
+FROM golang:1.19
+
+# Set destination for COPY
 WORKDIR /app
 
-COPY . .
+# Download Go modules
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+COPY go.mod go.sum ./
 
-RUN go build -o main main.go
 
-# Run Stage
-FROM alpine:3.13
-WORKDIR /app
-COPY --from=builder /app/main .
+RUN go mod download
+RUN echo 'PATH=$PATH:/foo/bar' > ~/.env
 
-EXPOSE 3000
+# Copy the source code. Note the slash at the end, as explained in
+# https://docs.docker.com/reference/dockerfile/#copy
+COPY *.go ./
+# Build
+RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-go-connect
 
-CMD [ "/app/main" ]
+# Optional:
+# To bind to a TCP port, runtime parameters must be supplied to the docker command.
+# But we can document in the Dockerfile what ports
+# the application is going to listen on by default.
+# https://docs.docker.com/reference/dockerfile/#expose
+EXPOSE 8080
+
+# Rungo install golang.org/x/tools/gopls@latest
+CMD ["/docker-go-connect"]
+ENTRYPOINT [ "/bin/bash","-c" ]

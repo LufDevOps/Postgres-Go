@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap 
-metadata:
-    name: posgres-configmap
-    namespace: posgres
-data:
-    db_url: posgres-service.database #tro vao service cua database
