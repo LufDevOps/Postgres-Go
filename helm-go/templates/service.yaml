@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}
   namespace: postgres
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   type: {{ .Values.service.type }}
   ports:

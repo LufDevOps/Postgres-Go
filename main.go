@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
+	
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/lib/pq"
 )
 
 type Person struct {
@@ -35,12 +36,20 @@ var err error
 
 func main() {
 	// Loading enviroment variables
-	dialect := os.Getenv("DIALECT")
+	/*dialect := os.Getenv("DIALECT")
 	host := os.Getenv("HOST")
 	dbPort := os.Getenv("DBPORT")
 	user := os.Getenv("USER")
 	dbname := os.Getenv("NAME")
-	dbpassword := os.Getenv("PASSWORD")
+	dbpassword := os.Getenv("PASSWORD")*/
+	
+	dialect :="postgres"
+	host :="localhost"
+	dbPort :="5432"
+	user :="postgres"
+	dbname :="books"
+	dbpassword :="giang2002"
+
 
 	// Database connection string
 	dbURI := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s port=%s", host, user, dbname, dbpassword, dbPort)
@@ -50,9 +59,9 @@ func main() {
 
 	if err != nil {
 		panic(err)
-	} else {
-		fmt.Println("Connected to database successfully ")
 	}
+
+	fmt.Println("Connected to database successfully ")
 
 	// Close the databse connection when the main function closes
 	defer db.Close()
@@ -76,6 +85,7 @@ func main() {
 	router.HandleFunc("/delete/book/{id}", DeleteBook).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
+	print("connect to database succes")
 }
 
 /*-------- API Controllers --------*/

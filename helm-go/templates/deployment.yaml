@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   namespace: postgres
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   replicas: {{ .Values.replicaCount }}
   template:

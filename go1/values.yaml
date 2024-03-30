@@ -1,0 +1,18 @@
+replicaCount: 1
+
+image:
+  repository: g1ang/my_repo369
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+env:
+  dialect: postgres
+  host: my-postgresql
+  dbPort: "5432"
+  user: postgres
+  dbname: books
+  dbpassword: giang2002
