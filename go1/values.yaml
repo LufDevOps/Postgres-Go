@@ -14,5 +14,5 @@ env:
   host: my-postgresql
   dbPort: "5432"
   user: postgres
-  dbname: books
-  dbpassword: giang2002
+  dbname: postgres
+  dbpassword: bS3hxrGGoL
