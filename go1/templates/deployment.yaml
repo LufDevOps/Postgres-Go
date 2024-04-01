@@ -25,14 +25,10 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-     
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          envFrom:
-          - secretRef:
-              name: postgres-secret          
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -41,6 +37,33 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          env:
+            - name: HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "go1.fullname" . }}-secret
+                  key: HOST
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "go1.fullname" . }}-secret
+                  key: PORT
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "go1.fullname" . }}-secret
+                  key: USER
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "go1.fullname" . }}-secret
+                  key: PASSWORD
+            - name: DBNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "go1.fullname" . }}-secret
+                  key: DBNAME
+            # Add more environment variables as needed
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -54,9 +77,6 @@ spec:
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
-        secret:
-          secretName: postgresSecret
-          optional: true
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
