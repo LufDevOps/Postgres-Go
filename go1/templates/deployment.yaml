@@ -63,7 +63,7 @@ spec:
                 secretKeyRef:
                   name: {{ include "go1.fullname" . }}-secret
                   key: DBNAME
-            # Add more environment variables as needed
+            
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
