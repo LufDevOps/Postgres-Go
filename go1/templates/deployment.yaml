@@ -53,11 +53,11 @@ spec:
                 secretKeyRef:
                   name: {{ include "go1.fullname" . }}-secret
                   key: USER
-            - name: PASSWORD
+            - name: DBPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ include "go1.fullname" . }}-secret
-                  key: PASSWORD
+                  key: DBPASSWORD
             - name: DBNAME
               valueFrom:
                 secretKeyRef:

@@ -10,25 +10,17 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	user = "postgres"
-)
-
 func main() {
-	env := os.Getenv("ENV")
-	if env == "local" {
-		err := godotenv.Load()
-		if err != nil {
-			log.Fatal("Error loading .env file")
-		}
-
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file")
 	}
 
-	host := os.Getenv("HOST")
-	port := os.Getenv("PORT")
-	// user := os.Getenv("USER")
-	password := os.Getenv("PASSWORD")
-	dbname := os.Getenv("DBNAME")
+	host := os.Getenv("POSTGRES_HOST")
+	port := os.Getenv("POSTGRES_PORT")
+	user := os.Getenv("POSTGRES_USER")
+	password := os.Getenv("POSTGRES_PASSWORD")
+	dbname := os.Getenv("POSTGRES_DBNAME")
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
