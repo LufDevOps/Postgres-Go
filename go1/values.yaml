@@ -10,8 +10,8 @@ service:
   port: 8080
 
 env:
-  host: "10.244.0.8"
-  dbPort: 5432
-  user: postgres
-  dbname: postgres
-  dbpassword: dz1hXCSgxg
+  HOST: "10.244.0.8"
+  PORT: 5432
+  USER: postgres
+  DBNAME: postgres
+  DBPASSWORD: dz1hXCSgxg
