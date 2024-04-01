@@ -10,7 +10,7 @@ service:
   port: 8080
 
 env:
-  HOST: "10.244.0.8"
+  HOST: "postgres-giang-postgresql.postgresql.svc.cluster.local"
   PORT: 5432
   USER: postgres
   DBNAME: postgres
