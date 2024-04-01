@@ -3,19 +3,27 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
-  "log"
-  "github.com/joho/godotenv"
+
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
-const(
-	user="postgres"
+
+const (
+	user = "postgres"
 )
+
 func main() {
-	err := godotenv.Load()
-  	if err != nil {
-    	log.Fatal("Error loading .env file")
-  	}	
+	env := os.Getenv("ENV")
+	if env == "local" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+
+	}
+
 	host := os.Getenv("HOST")
 	port := os.Getenv("PORT")
 	// user := os.Getenv("USER")
@@ -28,17 +36,17 @@ func main() {
 	db, err := sql.Open("postgres", psqlInfo)
 
 	fmt.Println(psqlInfo)
-		if err != nil {
-			panic(err)
-		}
-		defer db.Close()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
-		err = db.Ping()
-		if err != nil {
-			panic(err)
-		}
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
 
-		fmt.Println("Successfully connected!")
-	
+	fmt.Println("Successfully connected!")
+
 	db.Close()
 }
