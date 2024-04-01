@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: g1ang/my_repo369
-  tag: latest2
+  tag: latest7
   pullPolicy: IfNotPresent
 
 service:
