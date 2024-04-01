@@ -25,20 +25,25 @@ func main() {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlInfo)
-
-	fmt.Println(psqlInfo)
+	conn, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
-
-	err = db.Ping()
+	rows, err := conn.Query("SELECT version();")
 	if err != nil {
 		panic(err)
 	}
+
+	for rows.Next() {
+		var version string
+		rows.Scan(&version)
+		fmt.Println(version)
+	}
+
+	rows.Close()
+
+	conn.Close()
 
 	fmt.Println("Successfully connected!")
 
-	db.Close()
 }
