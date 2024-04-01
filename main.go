@@ -8,15 +8,15 @@ import (
 )
 
 const (
-  host     = "localhost"
-  port     = "5432"
+  host     = "10.244.0.8"
+  port     = 5432
   user     = "postgres"
   password = "dz1hXCSgxg"
   dbname   = "postgres"
 )
 
 func main() {
-  psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+  psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
     "password=%s dbname=%s sslmode=disable",
     host, port, user, password, dbname)
   db, err := sql.Open("postgres", psqlInfo)

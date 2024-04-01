@@ -10,9 +10,8 @@ service:
   port: 8080
 
 env:
-  dialect: postgres
-  host: my-postgresql
-  dbPort: "5432"
+  host: "10.244.0.8"
+  dbPort: 5432
   user: postgres
   dbname: postgres
   dbpassword: dz1hXCSgxg
