@@ -1,34 +1,42 @@
 package main
 
 import (
-  "database/sql"
-  "fmt"
-
-  _ "github.com/lib/pq"
-)
-
-const (
-  host     = "10.244.0.8"
-  port     = 5432
-  user     = "postgres"
-  password = "dz1hXCSgxg"
-  dbname   = "postgres"
+	"database/sql"
+	"fmt"
+	"os"
+  "log"
+  "github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-  psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-    "password=%s dbname=%s sslmode=disable",
-    host, port, user, password, dbname)
-  db, err := sql.Open("postgres", psqlInfo)
+  err := godotenv.Load()
   if err != nil {
-    panic(err)
+    log.Fatal("Error loading .env file")
   }
-  defer db.Close()
+  host := os.Getenv("HOST")
+  port := os.Getenv("PORT")
+  user := os.Getenv("USER")
+  password := os.Getenv("PASSWORD")
+  dbname := os.Getenv("DBNAME")
 
-  err = db.Ping()
-  if err != nil {
-    panic(err)
-  }
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
 
-  fmt.Println("Successfully connected!")
+  fmt.Println(psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Successfully connected!")
+  
+  db.Close()
 }
