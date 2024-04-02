@@ -3,47 +3,85 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	// "log"
+	"log"
+	"net/http"
 	"os"
 
-	// "github.com/joho/godotenv"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
-func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	log.Println("Error loading .env file")
-	// }
+var db *sql.DB
 
+func main() {
+	// Load environment variables from .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file")
+	}
+
+	// Retrieve PostgreSQL connection details from environment variables
 	host := os.Getenv("POSTGRES_HOST")
 	port := os.Getenv("POSTGRES_PORT")
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_DBPASSWORD")
 	dbname := os.Getenv("POSTGRES_DBNAME")
 
+	// Construct connection string
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-	conn, err := sql.Open("postgres", psqlInfo)
+
+	// Open a connection to the PostgreSQL database
+	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
-	rows, err := conn.Query("SELECT version();")
+	defer db.Close()
+
+	// Create a new Gin router
+	router := gin.Default()
+
+	// Define a route to handle GET requests to /version
+	router.GET("/version", getVersion)
+
+	// Define a route to handle liveness probes at /healthz
+	router.GET("/healthz", livenessProbe)
+
+	// Define a route to handle readiness probes at /ready
+	router.GET("/ready", readinessProbe)
+
+	// Run the Gin router on port 8080
+	router.Run(":8080")
+}
+
+func getVersion(c *gin.Context) {
+	// Query the database for the PostgreSQL version
+	var version string
+	err := db.QueryRow("SELECT version();").Scan(&version)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
+	c.JSON(http.StatusOK, gin.H{"version": version})
+}
 
-	for rows.Next() {
-		var version string
-		rows.Scan(&version)
-		fmt.Println(version)
+func livenessProbe(c *gin.Context) {
+	// Perform a simple check to verify the health of the application
+	err := db.Ping()
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Unhealthy")
+		return
 	}
+	c.String(http.StatusOK, "OK")
+}
 
-	rows.Close()
-
-	conn.Close()
-
-	fmt.Println("Successfully connected!")
-
+func readinessProbe(c *gin.Context) {
+	err := db.Ping()
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Not Ready")
+		return
+	}
+	c.String(http.StatusOK, "Ready")
 }
