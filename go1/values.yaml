@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: g1ang/my_repo369
-  tag: 0.2.2
+  tag: 0.2.9-pre
   pullPolicy: IfNotPresent
 
 service:
@@ -21,7 +21,12 @@ livenessProbe:
         path: /healthz
         port: 8080
         httpHeaders:
-        - name: Custom-Header
-          value: Awesome
       initialDelaySeconds: 3
       periodSeconds: 3
+
+readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 10
