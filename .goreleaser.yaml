@@ -85,7 +85,7 @@ dockers:
       - "g1ang/gorealeser:latest"
       - "g1ang/gorealeser:{{ .Tag }}"
       - "g1ang/gorealeser:v{{ .Major }}"
-      - "gcr.io/g1ang/gorealeser:latest"
+      #- "gcr.io/g1ang/gorealeser:latest"
 
     # Skips the docker build.
     # Could be useful if you want to skip building the windows docker image on
