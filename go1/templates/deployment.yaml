@@ -65,20 +65,10 @@ spec:
                   key: POSTGRES_DBNAME
            
           livenessProbe:
-            #{{- toYaml .Values.livenessProbe | nindent 12 }}
-            httpGet:
-              path: /healthz
-              port: 80
-            initialDelaySeconds: 0
-            periodSeconds: 10
-            timeoutSeconds: 1
-            failureThreshold: 3
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+
           readinessProbe:
-            #{{- toYaml .Values.readinessProbe | nindent 12 }}
-            httpGet:
-              path: /ready
-              port: 80
-            successThreshold: 3
+            {{- toYaml .Values.readinessProbe | nindent 12 }}     
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
