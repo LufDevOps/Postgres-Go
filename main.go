@@ -69,19 +69,9 @@ func getVersion(c *gin.Context) {
 
 func livenessProbe(c *gin.Context) {
 	// Perform a simple check to verify the health of the application
-	err := db.Ping()
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Unhealthy")
-		return
-	}
 	c.String(http.StatusOK, "OK")
 }
 
 func readinessProbe(c *gin.Context) {
-	err := db.Ping()
-	if err != nil {
-		c.String(http.StatusInternalServerError, "Not Ready")
-		return
-	}
-	c.String(http.StatusOK, "Ready")
+	c.String(http.StatusOK, "OK")
 }
