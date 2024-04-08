@@ -42,7 +42,7 @@ jobs:
       run: |
         wget http://github.com/golang-migrate/migrate/releases/latest/download/migrate.linux-amd64.deb
              
-        sudo mv migrate.linux-amd64 /usr/bin/migrate
+        sudo mv migrate.linux-amd64.deb /usr/bin/migrate
         which migrate
 
     - name: Run migrations
