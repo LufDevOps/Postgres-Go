@@ -36,6 +36,8 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
+
+
     - name: Run migrations
       run: psql -f db/migrations/file_name.sql postgresql://postgres:giang2002@localhost:5432/postgres  
 
