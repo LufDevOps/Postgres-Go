@@ -1,4 +1,4 @@
-# Book-Keeping-API
+# Helm-Book
 
 ## Go dependecies
 `go get github.com/jinzhu/gorm github.com/jinzhu/gorm/dialects/postgres github.com/gorilla/mux`
