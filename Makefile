@@ -5,7 +5,7 @@ createdb:
 	docker exec -it postgres-14 createdb --username=root --owner=root simple_bank
 
 migrateup:
-	migrate -path db/migration -database "$(DB_URL)" -verbose up
+	migrate -path db/migration -database "postgressql://root:secret@localhost:5433/simple_bank?sslmode=disable" -verbose up
 
 
 dropdb:
