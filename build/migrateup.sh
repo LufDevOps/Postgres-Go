@@ -1,9 +1,7 @@
 #!/bin/bash
 
-# Load environment variables from .env file
-set -a
-source "$(dirname "$0")/.env"
-set +a
+echo $POSTGRES_USER
+
 
 # Run migration up
-migrate -path db/migration -database "postgresql://$POSTGRES_USER:$POSTGRES_DBPASSWORD@localhost:5433/$POSTGRES_DBNAME?sslmode=disable" -verbose up
+migrate -path ./migrations -database "postgresql://$POSTGRES_USER:$POSTGRES_DBPASSWORD@localhost:5433/$POSTGRES_DBNAME?sslmode=disable" -verbose up
