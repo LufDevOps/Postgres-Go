@@ -2,7 +2,7 @@ name: ci-test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ go-app-connect_test2 ]
   pull_request:
     branches: [ main ]
 
@@ -20,7 +20,7 @@ jobs:
           POSTGRES_PASSWORD: secret
           POSTGRES_DB: simple_bank
         ports:
-          - 5433:5433
+          - 5433:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -46,7 +46,8 @@ jobs:
        
 
     - name: Run migrations
-      run: make migrateup
+      run: make postgres
+           make migrateup
 
     - name: Test
       run: make test
