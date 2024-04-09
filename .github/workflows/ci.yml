@@ -46,7 +46,7 @@ jobs:
        
 
     - name: Run migrations
-      run: make createdb
+      run: make postgres
            make migrateup
 
     - name: Test
