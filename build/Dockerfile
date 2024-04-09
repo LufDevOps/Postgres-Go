@@ -1,15 +1,24 @@
 FROM ubuntu
 
-WORKDIR /
-COPY db/migration ./migrations
+WORKDIR /app
+
+COPY db/migration ./migration
 COPY build/migrateup.sh ./
 
 RUN apt-get -y update; apt-get -y install curl
-RUN curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add -
-
-RUN echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list
-RUN migrate -version
+RUN curl -s https://packagecloud.io/install/repositories/golang-migrate/migrate/script.deb.sh | bash
+RUN apt-get update
+RUN apt-get install migrate
 RUN chmod +x ./migrateup.sh
+
+ENV POSTGRES_USER=root
+ENV POSTGRES_PASSWORD=secret
+ENV POSTGRES_HOST=172.19.0.2
+ENV POSTGRES_DB=simple_bank
+ENV POSTGRES_PORT=5432
+
+# CMD [ "ls" ]
+
 
 ENTRYPOINT ["./migrateup.sh"]
 
