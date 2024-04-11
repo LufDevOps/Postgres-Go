@@ -11,11 +11,11 @@ RUN apt-get update
 RUN apt-get install migrate
 RUN chmod +x ./migrateup.sh
 
-ENV POSTGRES_USER=root
-ENV POSTGRES_PASSWORD=secret
-ENV POSTGRES_HOST=172.19.0.2
-ENV POSTGRES_DB=simple_bank
-ENV POSTGRES_PORT=5432
+# ENV POSTGRES_USER=root
+# ENV POSTGRES_PASSWORD=secret
+# ENV POSTGRES_HOST=0.0.0.0
+# ENV POSTGRES_DB=simple_bank
+# ENV POSTGRES_PORT=5433
 
 # CMD [ "ls" ]
 
