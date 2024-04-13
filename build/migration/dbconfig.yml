@@ -1,0 +1,11 @@
+staging:
+  dialect: postgres
+  datasource: host=127.0.0.1 port=5432 user=postgres password=postgres dbname=people
+  dir: migrations
+  table: migrations
+
+production:
+  dialect: postgres
+  datasource: host=${POSTGRESQL_HOST} port=${POSTGRESQL_PORT} user=${POSTGRESQL_USER} password=${POSTGRESQL_PASSWORD} dbname=${POSTGRESQL_DB}
+  dir: migrations
+  table: migrations

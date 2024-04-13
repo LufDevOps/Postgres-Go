@@ -1,17 +1,17 @@
-DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
+DB_URL=postgresql://postgres:secret@localhost:5432/people?sslmode=disable
 DOCKER_COMPOSE_FILE ?= docker-compose.dev.yml
 
 network:
-	docker network create bank-network
+	docker network create people-network
 
 postgres:
 	docker run --name postgres --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:14-alpine
 
 createdb:
-	docker exec -it postgres createdb --username=root --owner=root simple_bank
+	docker exec -it postgres createdb --username=postgres --owner=postgres simple_bank
 	
 dropdb:
-	docker exec -it postgres dropdb simple_bank
+	docker exec -it postgres dropdb people
 
 migrateup:
 	migrate -path db/migration -database "$(DB_URL)" -verbose up
