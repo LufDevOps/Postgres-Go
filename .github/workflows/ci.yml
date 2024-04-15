@@ -1,12 +1,7 @@
 # .github/workflows/release.yml
 name: goreleaser
 
-on:
-  pull_request:
-  push:
-    # run only against tags
-    tags:
-      - "*"
+on: ["pull_request", "push"]
 
 permissions:
   contents: write
