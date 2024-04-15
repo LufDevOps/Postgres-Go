@@ -1,0 +1,29 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=root
+      - POSTGRES_DB=simple_bank
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bank-network
+
+  migrate:
+    build:
+      dockerfile: old_build/Dockerfile
+    # image: migrate-home:latest
+    networks:
+      - bank-network
+    depends_on:
+      - db
+    
+networks:
+  bank-network:
+    driver: bridge
