@@ -1,18 +1,8 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
-
-# The lines below are called `modelines`. See `:help modeline`
-# Feel free to remove those if you don't want/need to use them.
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-# vim: set ts=2 sw=2 tw=0 fo=cnqoj
-
 version: 1
 
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
     - go generate ./...
 
 builds:
@@ -24,7 +14,6 @@ builds:
 
 archives:
   - format: tar.gz
-    # this name template makes the OS and Arch compatible with the results of `uname`.
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -32,7 +21,6 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
     format_overrides:
       - goos: windows
         format: zip
@@ -50,30 +38,10 @@ dockers:
   - #
     # ID of the image, needed if you want to filter by it later on (e.g. on custom publishers).
     id: myimg
-
-    # GOOS of the built binaries/packages that should be used.
-    # Default: 'linux'
     goos: linux
-
-    # GOARCH of the built binaries/packages that should be used.
-    # Default: 'amd64'
     goarch: amd64
-
-    # GOARM of the built binaries/packages that should be used.
-    # Default: '6'
     goarm: ""
-
-    # GOAMD64 of the built binaries/packages that should be used.
-    # Default: 'v1'
     goamd64: "v2"
-
-    # IDs to filter the binaries/packages.
-    #
-    # Make sure to only include the IDs of binaries you want to `COPY` in your
-    # Dockerfile.
-    #
-    # If you include IDs that don't exist or are not available for the current
-    # architecture being built, the build of the image will be skipped.
     ids:
       - mybuild
       - mynfpm
@@ -82,21 +50,10 @@ dockers:
     #
     # Templates: allowed
     image_templates:
-      - "g1ang/gorealeser:latest"
-      - "g1ang/gorealeser:{{ .Tag }}"
-      - "g1ang/gorealeser:v{{ .Major }}"
-      #- "gcr.io/g1ang/gorealeser:latest"
-
-    # Skips the docker build.
-    # Could be useful if you want to skip building the windows docker image on
-    # linux, for example.
-    # Skips the docker push.
-    # Could be useful if you also do draft releases.
-    #
-    # If set to auto, the release will not be pushed to the Docker repository
-    #  in case there is an indicator of a prerelease in the tag, e.g. v1.0.0-rc1.
-    #
-    # Templates: allowed (since v1.19)
+      - "g1ang/migrate-golang:latest"
+      - "g1ang/migrate-golang:{{ .Tag }}"
+      - "g1ang/migrate-golang:v{{ .Major }}"
+     
     skip_push: false
 
     # Path to the Dockerfile (from the project root).
@@ -105,18 +62,6 @@ dockers:
     # Templates: allowed
     dockerfile: release/Dockerfile
 
-    # Use this instead of `dockerfile` if the contents of your Dockerfile are
-    # supposed to go through the template engine as well.
-    #
-    # `dockerfile` is ignored when this is set.
-
-    # Set the "backend" for the Docker pipe.
-    #
-    # Valid options are: docker, buildx, podman.
-    #
-    # Podman is a GoReleaser Pro feature and is only available on Linux.
-    #
-    # Default: 'docker'
     use: docker
 
     # Docker build flags.
@@ -133,22 +78,9 @@ dockers:
     # Extra flags to be passed down to the push command.
     push_flags:
       - --tls-verify=false
-
-    # If your Dockerfile copies files other than binaries and packages,
-    # you should list them here as well.
-    # Note that GoReleaser will create the same structure inside a temporary
-    # directory, so if you add `foo/bar.json` here, on your Dockerfile you can
-    # `COPY foo/bar.json /whatever.json`.
-    # Also note that the paths here are relative to the directory in which
-    # GoReleaser is being run (usually the repository root directory).
-    # This field does not support wildcards, you can add an entire directory here
-    # and use wildcards when you `COPY`/`ADD` in your Dockerfile.
+ 
     extra_files:
       - go.mod
       - go.sum
 
-    # Additional templated extra files to add to the Docker image.
-    # Those files will have their contents pass through the template engine,
-    # and its results will be added to the build context the same way as the
-    # extra_files field above.
-    #
+   
