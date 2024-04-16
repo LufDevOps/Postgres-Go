@@ -22,11 +22,11 @@ func main() {
 	}
 
 	// Retrieve PostgreSQL connection details from environment variables
-	host := os.Getenv("POSTGRES_HOST")
-	port := os.Getenv("POSTGRES_PORT")
-	user := os.Getenv("POSTGRES_USER")
-	password := os.Getenv("POSTGRES_DBPASSWORD")
-	dbname := os.Getenv("POSTGRES_DBNAME")
+	host := os.Getenv("POSTGRESQL_HOST")
+	port := os.Getenv("POSTGRESQL_PORT")
+	user := os.Getenv("POSTGRESQL_USER")
+	password := os.Getenv("POSTGRESQL_PASSWORD")
+	dbname := os.Getenv("POSTGRESQL_DB")
 
 	// Construct connection string
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+

@@ -9,13 +9,6 @@ service:
   type: ClusterIP
   port: 8080
 
-env:
-  HOST: "postgres-giang-postgresql.postgresql.svc.cluster.local"
-  PORT: 5432
-  USER: postgres
-  DBNAME: postgres
-  DBPASSWORD: dz1hXCSgxg
-
 livenessProbe:
       httpGet:
         path: /healthz
