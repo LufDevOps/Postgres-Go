@@ -1,4 +1,3 @@
 FROM scratch
-WORKDIR /app
-COPY . .
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/"]
+COPY . /

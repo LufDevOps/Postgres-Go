@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: g1ang/my_repo369
-  tag: 0.2.9-pre
+  repository: g1ang/go-server
+  tag: release
   pullPolicy: IfNotPresent
 
 service:
