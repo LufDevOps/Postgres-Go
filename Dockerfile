@@ -13,6 +13,13 @@ RUN echo 'PATH=$PATH:/foo/bar' > ~/.env
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/reference/dockerfile/#copy
+
+ENV POSTGRESQL_DB=postgres
+ENV POSTGRESQL_HOST=postgres-giang-postgresql.postgresql.svc.cluster.local
+ENV POSTGRESQL_PASSWORD=dz1hXCSgxg
+ENV POSTGRESQL_PORT=5432
+ENV POSTGRESQL_USER=postgres
+
 COPY *.go ./
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-go-connect
