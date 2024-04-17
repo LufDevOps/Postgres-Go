@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: g1ang/go-server
+  repository: g1ang/demo
   tag: release
   pullPolicy: IfNotPresent
 
