@@ -8,12 +8,19 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
 
 func main() {
+	// Load environment variables from .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file")
+	}
+
 	// Retrieve PostgreSQL connection details from environment variables
 	host := os.Getenv("POSTGRESQL_HOST")
 	port := os.Getenv("POSTGRESQL_PORT")
@@ -27,7 +34,7 @@ func main() {
 		host, port, user, password, dbname)
 
 	// Open a connection to the PostgreSQL database
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
@@ -46,10 +53,7 @@ func main() {
 	router.GET("/ready", readinessProbe)
 
 	// Run the Gin router on port 8080
-	err = router.Run(":8080")
-	if err != nil {
-		log.Fatal(err)
-	}
+	router.Run(":8080")
 }
 
 func getVersion(c *gin.Context) {
