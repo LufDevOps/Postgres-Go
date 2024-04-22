@@ -1,3 +1,4 @@
+
 # .github/workflows/release.yml
 name: goreleaser
 
@@ -63,4 +64,3 @@ jobs:
           file: binary-image/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}  
