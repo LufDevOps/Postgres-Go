@@ -6,13 +6,40 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
+	"math/rand"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
+	"github.com/prometheus/client_golang/prometheus"
+	// "github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 var db *sql.DB
+type metrics struct {
+	duration *prometheus.SummaryVec
+}
+
+func NewMetrics(reg prometheus.Registerer) *metrics {
+	m := &metrics{
+		duration: prometheus.NewSummaryVec(prometheus.SummaryOpts{
+			Namespace:  "tester",
+			Name:       "duration_seconds",
+			Help:       "Duration of the request.",
+			Objectives: map[float64]float64{0.9: 0.01, 0.99: 0.001},
+		}, []string{"path", "status"}),
+	}
+	reg.MustRegister(m.duration)
+	return m
+}
+
+type Device struct {
+	ID       int    `json:"id"`
+	Mac      string `json:"mac"`
+	Firmware string `json:"firmware"`
+}
 
 func main() {
 	// Load environment variables from .env file
@@ -74,4 +101,29 @@ func livenessProbe(c *gin.Context) {
 
 func readinessProbe(c *gin.Context) {
 	c.String(http.StatusOK, "OK")
+}
+
+func getDevices(c *fiber.Ctx) error {
+	sleep(1000)
+	dvs := []Device{
+		{1, "5F-33-CC-1F-43-82", "2.1.6"},
+		{2, "EF-2B-C4-F5-D6-34", "2.1.6"},
+	}
+
+	return c.JSON(dvs)
+}
+
+func simulateTraffic(m *metrics) {
+	for {
+		now := time.Now()
+		sleep(1000)
+		m.duration.WithLabelValues("/fake", "200").Observe(time.Since(now).Seconds())
+	}
+}
+
+func sleep(ms int) {
+	rand.Seed(time.Now().UnixNano())
+	now := time.Now()
+	n := rand.Intn(ms + now.Second())
+	time.Sleep(time.Duration(n) * time.Millisecond)
 }
