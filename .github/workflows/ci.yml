@@ -6,7 +6,6 @@ on:
     tags:
       - '*'
     # branches: ['release']
-    # abc
 
 permissions:
   contents: write
