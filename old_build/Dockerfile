@@ -17,11 +17,11 @@ RUN chmod +x ./migrateup.sh
 # ENV POSTGRESQL_PASSWORD="secret"
 # ENV POSTGRESQL_DB="simple_bank"
 
-ENV POSTGRESQL_HOST="postgres-giang-postgresql.postgresql.svc.cluster.local"
-ENV POSTGRESQL_PORT=5432
-ENV POSTGRESQL_USER="postgres"
-ENV POSTGRESQL_PASSWORD="dz1hXCSgxg"
-ENV POSTGRESQL_DB="postgres"
+# ENV POSTGRESQL_HOST="host.docker.internal"
+# ENV POSTGRESQL_PORT=5432
+# ENV POSTGRESQL_USER="postgres"
+# ENV POSTGRESQL_PASSWORD="postgrespassword"
+# ENV POSTGRESQL_DB="shop"
 
 # CMD [ "ls" ]
 

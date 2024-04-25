@@ -1,15 +1,31 @@
-version: "3.9"
+version: "3.1"
+
 services:
   grafana:
     image: grafana/grafana
     ports:
       - 3000:3000
+    networks:
+      - bank-network  
+      
   prometheus:
     image: prom/prometheus
     ports:
       - 9090:9090
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks:
+      - bank-network
+  
+  migrate:
+    build:
+      dockerfile: old_build/Dockerfile
+    # image: migrate-home:latest
+    depends_on:
+      - postgres
+    networks:
+      - bank-network
+
   postgres:
     image: postgres:12
     ports:
@@ -19,6 +35,9 @@ services:
     environment:
       POSTGRES_PASSWORD: postgrespassword
       POSTGRES_DB: shop
+    networks:
+      - bank-network
+
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
     ports:
@@ -28,3 +47,9 @@ services:
     links:
       - postgres
       - prometheus
+    networks:
+      - bank-network
+      
+networks:
+  bank-network:
+    driver: bridge
