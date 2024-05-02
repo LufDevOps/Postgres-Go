@@ -5,4 +5,4 @@ echo "Postgres is up - begin migrating"
 
 #docker exec -it postgres createdb --username=postgres --owner=postgres postgres
 
-migrate -path ./migration -database "postgresql://$POSTGRESQL_USER:$POSTGRESQL_PASSWORD@$POSTGRESQL_HOST:$POSTGRESQL_PORT/$POSTGRESQL_DB?sslmode=disable" -verbose up
+migrate -path ./migration -database "postgresql://postgres:postgrespassword@postgres:5432/shop?sslmode=disable" -verbose up
