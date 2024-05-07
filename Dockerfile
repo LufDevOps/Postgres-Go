@@ -1,5 +1,5 @@
 
-FROM golang:1.19
+FROM golang:1.20
 WORKDIR /app
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 COPY go.mod go.sum ./
