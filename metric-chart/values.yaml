@@ -1,0 +1,27 @@
+
+replicaCount: 1
+
+image:
+  repository: g1ang/my_repo369
+  tag: prometheus
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+
+
+livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+        httpHeaders:
+      initialDelaySeconds: 3
+      periodSeconds: 3
+
+readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 15
