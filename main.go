@@ -10,54 +10,119 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"strconv"
 )
 
+type responseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func NewResponseWriter(w http.ResponseWriter) *responseWriter {
+	return &responseWriter{w, http.StatusOK}
+}
+
+func (rw *responseWriter) WriteHeader(code int) {
+	rw.statusCode = code
+	rw.ResponseWriter.WriteHeader(code)
+}
+
+var totalRequests = prometheus.NewCounterVec(
+	prometheus.CounterOpts{
+		Name: "http_requests_total",
+		Help: "Number of get requests.",
+	},
+	[]string{"path"},
+)
+
+var responseStatus = prometheus.NewCounterVec(
+	prometheus.CounterOpts{
+		Name: "response_status",
+		Help: "Status of HTTP response",
+	},
+	[]string{"status"},
+)
+
+var httpDuration = promauto.NewHistogramVec(prometheus.HistogramOpts{
+	Name: "http_response_time_seconds",
+	Help: "Duration of HTTP requests.",
+}, []string{"path"})
+
+func prometheusMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		route := mux.CurrentRoute(r)
+		path, _ := route.GetPathTemplate()
+
+		timer := prometheus.NewTimer(httpDuration.WithLabelValues(path))
+		rw := NewResponseWriter(w)
+		next.ServeHTTP(rw, r)
+
+		statusCode := rw.statusCode
+
+		responseStatus.WithLabelValues(strconv.Itoa(statusCode)).Inc()
+		totalRequests.WithLabelValues(path).Inc()
+
+		timer.ObserveDuration()
+	})
+}
+
+func init() {
+	prometheus.Register(totalRequests)
+	prometheus.Register(responseStatus)
+	prometheus.Register(httpDuration)
+}
 var db *sql.DB
 
 func main() {
-	// Load environment variables from .env file
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Error loading .env file")
 	}
-
-	// Retrieve PostgreSQL connection details from environment variables
 	host := os.Getenv("POSTGRESQL_HOST")
 	port := os.Getenv("POSTGRESQL_PORT")
 	user := os.Getenv("POSTGRESQL_USER")
 	password := os.Getenv("POSTGRESQL_PASSWORD")
 	dbname := os.Getenv("POSTGRESQL_DB")
 
-	// Construct connection string
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	// Open a connection to the PostgreSQL database
 	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 
-	// Create a new Gin router
-	router := gin.Default()
+	// router := gin.Default()
 
-	// Define a route to handle GET requests to /version
-	router.GET("/version", getVersion)
+	// router.GET("/version", getVersion)
+	// router.GET("/healthz", livenessProbe)
+	// router.GET("/ready", readinessProbe)
+	// router.Run(":8080")
 
-	// Define a route to handle liveness probes at /healthz
-	router.GET("/healthz", livenessProbe)
+	router := mux.NewRouter()
+	router.Use(prometheusMiddleware)
 
-	// Define a route to handle readiness probes at /ready
-	router.GET("/ready", readinessProbe)
+	// Prometheus endpoint
+	router.Path("/prometheus").Handler(promhttp.Handler())
 
-	// Run the Gin router on port 8080
-	router.Run(":8080")
+	// Serving static files
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+
+	fmt.Println("Serving requests on port 9000")
+	err1 := http.ListenAndServe(":9000", router)
+	log.Fatal(err1)
+
+	
 }
 
 func getVersion(c *gin.Context) {
-	// Query the database for the PostgreSQL version
 	var version string
 	err := db.QueryRow("SELECT version();").Scan(&version)
 	if err != nil {
@@ -68,7 +133,6 @@ func getVersion(c *gin.Context) {
 }
 
 func livenessProbe(c *gin.Context) {
-	// Perform a simple check to verify the health of the application
 	c.String(http.StatusOK, "OK")
 }
 
