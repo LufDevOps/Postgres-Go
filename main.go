@@ -111,10 +111,6 @@ func main() {
 
 	// Prometheus endpoint
 	router.Path("/prometheus").Handler(promhttp.Handler())
-
-	// Serving static files
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
-
 	fmt.Println("Serving requests on port 9000")
 	err1 := http.ListenAndServe(":9000", router)
 	log.Fatal(err1)
